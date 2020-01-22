@@ -2,7 +2,6 @@ package idv.tommy.util;
 
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,14 +26,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 				.antMatchers("/", "/home").permitAll()
 				.antMatchers("/admin/**").hasRole("ADMIN")
-				.antMatchers("/user/**").hasRole("USER")
+				.antMatchers("/user/**").hasAnyRole("ADMIN","USER")
 				.antMatchers("/app/**").permitAll()
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()
 				.loginPage("/login")
 				.loginProcessingUrl("/login")
-				.defaultSuccessUrl("/user").permitAll() 
+				.defaultSuccessUrl("/hello").permitAll() 
 				.permitAll()
 				.and()
 			.logout()
@@ -52,9 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //	    return new BCryptPasswordEncoder();
 //	}
 	 
-	@Autowired 
-    @Qualifier("dataSource")
-    private DataSource dataSource;
+	@Autowired
+	private DataSource dataSource;
 	
 	@Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
